@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "662509438317",
+    "project_id": "eski-esya-satis",
+    "storage_bucket": "eski-esya-satis.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662509438317:android:0954dcb1fad8abb75f4664",
+        "android_client_info": {
+          "package_name": "com.example.eskiesyasatis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArrOQyV9wI27ARqPxme6aNlDoXDOBm8Us"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
