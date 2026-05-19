@@ -18,6 +18,7 @@ public class MyListingsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ListingAdapter listingAdapter;
     private TextView tvEmptyMessage;
+    private ListingRepository.OnDataChangedListener dataChangedListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,20 @@ public class MyListingsActivity extends AppCompatActivity {
 
         updateEmptyState(myListings);
 
-        ListingRepository.getInstance().setOnDataChangedListener(() -> {
+        dataChangedListener = () -> {
             List<Listing> updatedList = ListingRepository.getInstance().getListingsByOwnerId(currentUserId);
             listingAdapter.updateList(updatedList);
             updateEmptyState(updatedList);
-        });
+        };
+        ListingRepository.getInstance().setOnDataChangedListener(dataChangedListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dataChangedListener != null) {
+            ListingRepository.getInstance().removeOnDataChangedListener(dataChangedListener);
+        }
     }
 
     private void updateEmptyState(List<Listing> listings) {

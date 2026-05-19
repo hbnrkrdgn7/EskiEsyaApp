@@ -71,19 +71,35 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(LoginActivity.this, "Giriş Başarılı!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        com.google.firebase.auth.FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null && user.isEmailVerified()) {
+                            Toast.makeText(LoginActivity.this, "Giriş Başarılı!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Lütfen e-posta adresinize gönderilen linke tıklayarak hesabınızı doğrulayın.", Toast.LENGTH_LONG).show();
+                            mAuth.signOut(); // Doğrulamamışsa çıkış yap
+                        }
                     } else {
                         String errorMessage = "Giriş işlemi başarısız oldu.";
                         Exception e = task.getException();
 
                         if (e != null) {
-                            if (e instanceof FirebaseAuthInvalidUserException) {
-                                errorMessage = "Bu e-posta adresine kayıtlı bir kullanıcı bulunamadı.";
+                            String errorCode = "";
+                            if (e instanceof com.google.firebase.auth.FirebaseAuthException) {
+                                errorCode = ((com.google.firebase.auth.FirebaseAuthException) e).getErrorCode();
+                            }
+                            
+                            if (e instanceof FirebaseAuthInvalidUserException || "ERROR_USER_NOT_FOUND".equals(errorCode)) {
+                                errorMessage = "Girdiğiniz e-posta adresine kayıtlı bir hesap bulunamadı.";
                             } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                                errorMessage = "Şifreniz yanlış. Lütfen tekrar deneyin.";
+                                // Eğer e-posta formatı hatası değilse, şifre yanlış demektir
+                                if ("ERROR_INVALID_EMAIL".equals(errorCode)) {
+                                    errorMessage = "Lütfen geçerli bir e-posta adresi girin.";
+                                } else {
+                                    errorMessage = "Girdiğiniz şifre yanlış. Lütfen tekrar deneyin.";
+                                }
                             } else if (e instanceof FirebaseNetworkException) {
                                 errorMessage = "İnternet bağlantınız yok veya sunucuya erişilemiyor.";
                             } else if (e.getMessage() != null && e.getMessage().contains("CONFIGURATION_NOT_FOUND")) {

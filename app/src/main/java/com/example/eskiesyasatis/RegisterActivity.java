@@ -90,16 +90,18 @@ public class RegisterActivity extends AppCompatActivity {
                                     .setDisplayName(name)
                                     .build();
                             user.updateProfile(profileUpdates).addOnCompleteListener(profileTask -> {
-                                Toast.makeText(RegisterActivity.this, "Kayıt Başarıyla Tamamlandı!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
+                                user.sendEmailVerification().addOnCompleteListener(emailTask -> {
+                                    if (emailTask.isSuccessful()) {
+                                        Toast.makeText(RegisterActivity.this, "Kayıt Başarılı! Lütfen e-postanızı doğrulayın.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(RegisterActivity.this, "Kayıt Başarılı! Doğrulama e-postası gönderilemedi.", Toast.LENGTH_LONG).show();
+                                    }
+                                    mAuth.signOut(); // Doğrulamadan girmesine izin verme
+                                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                });
                             });
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Kayıt Başarıyla Tamamlandı!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
                         }
                     } else {
                         // Eğer kayıt işlemi başarısız olursa Firebase'in hatasını Türkçeye çevirip kullanıcıya gösteriyoruz

@@ -10,10 +10,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ListenerRegistration unreadListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +54,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new HomeFragment();
             } else if (itemId == R.id.nav_favorites) {
                 selectedFragment = new FavoritesFragment();
-            } else if (itemId == R.id.nav_cart) {
-                // Cart is now a separate activity
-                Intent intent = new Intent(MainActivity.this, CartActivity.class);
-                startActivity(intent);
-                return false; // don't change visually selected item
+            } else if (itemId == R.id.nav_chats) {
+                selectedFragment = new ChatsFragment();
             } else if (itemId == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
             }
@@ -74,6 +80,45 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new HomeFragment())
                     .commit();
+        }
+
+        // Listen for unread messages to update Profile badge
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            unreadListener = FirebaseFirestore.getInstance().collection("Chats")
+                .whereArrayContains("participants", currentUserId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null || value == null) return;
+                    int unreadChatsCount = 0;
+                    for (DocumentSnapshot doc : value.getDocuments()) {
+                        Map<String, Long> unreadCounts = (Map<String, Long>) doc.get("unreadCounts");
+                        if (unreadCounts != null && unreadCounts.containsKey(currentUserId)) {
+                            Long count = unreadCounts.get(currentUserId);
+                            if (count != null && count > 0) {
+                                unreadChatsCount++;
+                            }
+                        }
+                    }
+                    
+                    BadgeDrawable badge = bottomNav.getOrCreateBadge(R.id.nav_chats);
+                    if (unreadChatsCount > 0) {
+                        badge.setVisible(true);
+                        badge.setNumber(unreadChatsCount);
+                        badge.setBackgroundColor(android.graphics.Color.parseColor("#F44336")); // Parlak Kırmızı
+                        badge.setBadgeTextColor(android.graphics.Color.WHITE);
+                    } else {
+                        badge.setVisible(false);
+                        badge.clearNumber();
+                    }
+                });
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unreadListener != null) {
+            unreadListener.remove();
         }
     }
 }

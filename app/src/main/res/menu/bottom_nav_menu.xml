@@ -16,9 +16,9 @@
         android:enabled="false" />
         
     <item
-        android:id="@+id/nav_cart"
-        android:icon="@drawable/ic_shopping_cart"
-        android:title="Sepetim" />
+        android:id="@+id/nav_chats"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="Sohbetler" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@android:drawable/ic_menu_myplaces"

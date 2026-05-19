@@ -40,33 +40,63 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
         holder.tvListingTitle.setText(listing.getTitle());
         holder.tvListingPrice.setText(listing.getPrice() + " TL");
 
-        if (listing.getImageUriString() != null) {
-            try {
-                holder.ivListingImage.setImageURI(Uri.parse(listing.getImageUriString()));
-            } catch (Exception e) {
-                holder.ivListingImage.setImageResource(android.R.drawable.ic_menu_gallery);
+        if (listing.getImageUriString() != null && !listing.getImageUriString().isEmpty()) {
+            String imageUrl = listing.getImageUriString();
+            if (imageUrl.startsWith("data:image")) {
+                // Base64 data URI — Glide doğrudan yükleyemez, manuel decode et
+                try {
+                    String base64Data = imageUrl.substring(imageUrl.indexOf(",") + 1);
+                    byte[] decodedBytes = android.util.Base64.decode(base64Data, android.util.Base64.DEFAULT);
+                    android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                    holder.ivListingImage.setImageBitmap(bitmap);
+                    holder.ivListingImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                } catch (Exception e) {
+                    holder.ivListingImage.setImageResource(android.R.drawable.ic_menu_gallery);
+                }
+            } else {
+                com.bumptech.glide.Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .error(android.R.drawable.ic_menu_gallery)
+                    .centerCrop()
+                    .into(holder.ivListingImage);
             }
         } else {
-            // Fallback for mock items
             holder.ivListingImage.setImageResource(android.R.drawable.ic_menu_gallery);
+        }
+
+        if ("sold".equals(listing.getStatus())) {
+            holder.tvSoldBadge.setVisibility(View.VISIBLE);
+            holder.ivListingImage.setAlpha(0.5f);
+        } else {
+            holder.tvSoldBadge.setVisibility(View.GONE);
+            holder.ivListingImage.setAlpha(1.0f);
         }
         
         // Favorite Logic - Kullanıcıya özel
-        boolean isFav = FavoritesRepository.getInstance().isFavorite(listing.getId());
-        updateFavoriteIcon(holder.btnFavorite, isFav, context);
+        String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
         
-        holder.btnFavorite.setOnClickListener(v -> {
-            boolean currentlyFav = FavoritesRepository.getInstance().isFavorite(listing.getId());
-            if (currentlyFav) {
-                FavoritesRepository.getInstance().removeFavorite(listing.getId());
-                updateFavoriteIcon(holder.btnFavorite, false, context);
-                Toast.makeText(context, "Favorilerden çıkarıldı", Toast.LENGTH_SHORT).show();
-            } else {
-                FavoritesRepository.getInstance().addFavorite(listing);
-                updateFavoriteIcon(holder.btnFavorite, true, context);
-                Toast.makeText(context, "Favorilere eklendi", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Kendi ilanında favori butonu gösterme
+        if (currentUid != null && currentUid.equals(listing.getOwnerId())) {
+            holder.btnFavorite.setVisibility(View.GONE);
+        } else {
+            holder.btnFavorite.setVisibility(View.VISIBLE);
+            boolean isFav = FavoritesRepository.getInstance().isFavorite(listing.getId());
+            updateFavoriteIcon(holder.btnFavorite, isFav, context);
+            
+            holder.btnFavorite.setOnClickListener(v -> {
+                boolean currentlyFav = FavoritesRepository.getInstance().isFavorite(listing.getId());
+                if (currentlyFav) {
+                    FavoritesRepository.getInstance().removeFavorite(listing.getId());
+                    updateFavoriteIcon(holder.btnFavorite, false, context);
+                    Toast.makeText(context, "Favorilerden çıkarıldı", Toast.LENGTH_SHORT).show();
+                } else {
+                    FavoritesRepository.getInstance().addFavorite(listing);
+                    updateFavoriteIcon(holder.btnFavorite, true, context);
+                    Toast.makeText(context, "Favorilere eklendi", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
         
         // Item Click Logic
         holder.itemView.setOnClickListener(v -> {
@@ -101,6 +131,7 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
         TextView tvListingPrice;
         TextView tvListingTitle;
         ImageButton btnFavorite;
+        TextView tvSoldBadge;
 
         public ListingViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -108,6 +139,7 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
             tvListingPrice = itemView.findViewById(R.id.tvListingPrice);
             tvListingTitle = itemView.findViewById(R.id.tvListingTitle);
             btnFavorite = itemView.findViewById(R.id.btnFavorite);
+            tvSoldBadge = itemView.findViewById(R.id.tvSoldBadge);
         }
     }
 }

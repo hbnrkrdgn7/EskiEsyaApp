@@ -2,10 +2,43 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primaryColor">#FF3B30</color>
-    <color name="primaryDarkColor">#C32C23</color>
-    <color name="backgroundColor">#F5F5F5</color>
-    <color name="textColorPrimary">#212121</color>
-    <color name="textColorSecondary">#757575</color>
-    <color name="borderColor">#E0E0E0</color>
+
+    <!-- Retrova Palette - Teal to Mint Green (Logo uyumlu) -->
+    <color name="primaryColor">#3AAFA9</color>          <!-- Yumuşak teal -->
+    <color name="primaryDarkColor">#2D8F8A</color>       <!-- Koyu teal -->
+    <color name="primaryLightColor">#D0EDE8</color>      <!-- Çok açık teal -->
+    <color name="accentColor">#6DC99D</color>            <!-- Mint yeşil (logo gradient sağ taraf) -->
+
+    <!-- Backgrounds -->
+    <color name="backgroundColor">#F5FAFA</color>        <!-- Neredeyse beyaz, hafif teal tint -->
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="surfaceColor">#EDF6F5</color>           <!-- Hafif teal yüzey -->
+
+    <!-- Text -->
+    <color name="textColorPrimary">#1A1A1A</color>       <!-- Neredeyse tam Siyah -->
+    <color name="textColorSecondary">#4A4A4A</color>     <!-- Koyu Gri (okunabilir) -->
+
+    <!-- Divider / Border -->
+    <color name="borderColor">#D0EDE8</color>            <!-- Pastel teal border -->
+    <color name="dividerColor">#E0F0EC</color>
+
+    <!-- Legacy compatibility -->
+    <color name="lightBackground">#FFFFFF</color>
+
+    <!-- Chat Bubbles -->
+    <color name="chatBubbleSender">#E5F5F2</color>       <!-- Çok açık teal -->
+    <color name="chatBubbleReceiver">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="statusSuccess">#3AAFA9</color>
+    <color name="statusError">#C06060</color>
+    <color name="statusWarning">#D4A86A</color>
+
+    <!-- Card Gradient -->
+    <color name="cardGradientStart">#2D8F8A</color>
+    <color name="cardGradientEnd">#3A9A80</color>
+
+    <!-- Login/Register Hero -->
+    <color name="heroGradientStart">#2BBCB3</color>
+    <color name="heroGradientEnd">#6DC99D</color>
 </resources>

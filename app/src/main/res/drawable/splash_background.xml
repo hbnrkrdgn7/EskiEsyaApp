@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Gradient arka plan -->
+    <item android:drawable="@drawable/bg_hero_gradient" />
+    <!-- Ortada logo -->
+    <item
+        android:gravity="center"
+        android:width="160dp"
+        android:height="160dp"
+        android:drawable="@drawable/logo_retrova" />
+</layer-list>

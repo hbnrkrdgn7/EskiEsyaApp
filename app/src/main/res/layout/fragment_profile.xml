@@ -10,15 +10,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Başlık -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Profilim"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/textColorPrimary"
-            android:padding="16dp" />
+            android:padding="20dp"
+            android:background="@color/white"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👤 Profilim"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/textColorPrimary" />
+
+        </LinearLayout>
 
         <!-- Kullanıcı Bilgi Kartı -->
         <androidx.cardview.widget.CardView
@@ -27,8 +36,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="3dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             android:backgroundTint="@color/white">
 
             <LinearLayout
@@ -38,21 +47,48 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <!-- Profil Avatarı -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    app:cardCornerRadius="32dp"
-                    app:cardElevation="0dp"
-                    android:backgroundTint="@color/primaryColor">
+                <!-- Profil Avatarı (Tıklanabilir) -->
+                <FrameLayout
+                    android:id="@+id/layoutProfilePhoto"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_person"
-                        app:tint="@color/white" />
-                </androidx.cardview.widget.CardView>
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        app:cardCornerRadius="36dp"
+                        app:cardElevation="0dp"
+                        android:backgroundTint="@color/primaryColor">
+
+                        <ImageView
+                            android:id="@+id/ivProfilePhoto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_person"
+                            android:scaleType="centerCrop"
+                            app:tint="@color/white" />
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Kamera ikonu overlay -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="bottom|end"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="2dp"
+                        android:backgroundTint="@color/white">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/ic_menu_camera"
+                            app:tint="@color/primaryColor" />
+                    </androidx.cardview.widget.CardView>
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -89,8 +125,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="3dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             android:backgroundTint="@color/white">
 
             <LinearLayout
@@ -131,6 +167,55 @@
                         android:layout_height="20dp"
                         android:src="@drawable/ic_chevron_right"
                         app:tint="@color/textColorSecondary" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/borderColor"
+                    android:layout_marginStart="56dp" />
+
+                <!-- Sohbetlerim -->
+                <LinearLayout
+                    android:id="@+id/menuMyChats"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_chat"
+                        app:tint="@color/primaryColor" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Sohbetlerim"
+                        android:textSize="16sp"
+                        android:textColor="@color/textColorPrimary"
+                        android:layout_marginStart="16dp" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/textColorSecondary" />
+
+                    <View
+                        android:id="@+id/viewUnreadProfileBadge"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_unread_badge"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <View
@@ -265,8 +350,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="3dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             android:backgroundTint="@color/white">
 
             <LinearLayout

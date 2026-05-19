@@ -12,7 +12,8 @@ public class ListingRepository {
     private static ListingRepository instance;
     private List<Listing> listings;
     private FirebaseFirestore db;
-    private OnDataChangedListener listener;
+    private List<OnDataChangedListener> listeners = new ArrayList<>();
+    private boolean isLoaded = false;
 
     public interface OnDataChangedListener {
         void onDataChanged();
@@ -31,8 +32,19 @@ public class ListingRepository {
         return instance;
     }
 
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+
     public void setOnDataChangedListener(OnDataChangedListener listener) {
-        this.listener = listener;
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+    
+    public void removeOnDataChangedListener(OnDataChangedListener listener) {
+        listeners.remove(listener);
     }
 
     private void fetchListingsFromFirestore() {
@@ -40,6 +52,10 @@ public class ListingRepository {
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
                         Log.w("Firestore", "Listen failed.", error);
+                        isLoaded = true;
+                        for (OnDataChangedListener l : new ArrayList<>(listeners)) {
+                            l.onDataChanged();
+                        }
                         return;
                     }
 
@@ -47,13 +63,20 @@ public class ListingRepository {
                         listings.clear();
                         for (QueryDocumentSnapshot doc : value) {
                             Listing listing = doc.toObject(Listing.class);
-                            if (listing.getId() == null) {
-                                listing.setId(doc.getId());
+
+                            // CRITICAL KONTROL: Eğer dokümanın içi tamamen boşaltılmışsa veya
+                            // başlığı/durumu null geldiyse bu bozuk veriyi listeye hiç ekleme!
+                            if (listing != null && listing.getTitle() != null && listing.getStatus() != null) {
+                                if (listing.getId() == null) {
+                                    listing.setId(doc.getId());
+                                }
+                                listings.add(listing);
                             }
-                            listings.add(listing);
                         }
-                        if (listener != null) {
-                            listener.onDataChanged();
+                        Log.d("Firestore", "Toplam " + listings.size() + " ilan yüklendi");
+                        isLoaded = true;
+                        for (OnDataChangedListener l : new ArrayList<>(listeners)) {
+                            l.onDataChanged();
                         }
                     }
                 });
@@ -61,6 +84,16 @@ public class ListingRepository {
 
     public List<Listing> getListings() {
         return listings;
+    }
+
+    public List<Listing> getActiveListings() {
+        List<Listing> activeListings = new ArrayList<>();
+        for (Listing listing : listings) {
+            if ("active".equals(listing.getStatus())) {
+                activeListings.add(listing);
+            }
+        }
+        return activeListings;
     }
     
     public Listing getListingById(String id) {
@@ -71,10 +104,9 @@ public class ListingRepository {
         return null;
     }
 
-    public void addListing(Listing listing) {
-        // Doğrudan veritabanına ekliyoruz. SnapshotListener sayesinde
-        // veritabanına eklendiği an "listings" listesi otomatik güncellenecektir.
-        db.collection("Listings").document(listing.getId()).set(listing);
+    public com.google.android.gms.tasks.Task<Void> addListing(Listing listing) {
+        // Döndürülen Task sayesinde çağıran yer işlemin bitmesini bekleyebilir
+        return db.collection("Listings").document(listing.getId()).set(listing);
     }
     
     public void updateListing(Listing listing) {

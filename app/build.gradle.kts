@@ -40,6 +40,19 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    
+    // Skeleton Loading (Shimmer)
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    
+    // Pinch-to-zoom image viewer
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
+    
+    // Image Cropper (uCrop)
+    implementation("com.github.yalantis:ucrop:2.2.8")
 
     implementation(libs.appcompat)
     implementation(libs.material)

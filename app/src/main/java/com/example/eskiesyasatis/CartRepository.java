@@ -74,4 +74,21 @@ public class CartRepository {
             db.collection("Users").document(userId).collection("Cart").document(listing.getId()).set(listing);
         }
     }
+
+    public void clearCart() {
+        String userId = FirebaseAuth.getInstance().getUid();
+        if (userId != null) {
+            db.collection("Users").document(userId).collection("Cart")
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            doc.getReference().delete();
+                        }
+                        cartListings.clear();
+                        if (listener != null) {
+                            listener.onCartChanged();
+                        }
+                    });
+        }
+    }
 }

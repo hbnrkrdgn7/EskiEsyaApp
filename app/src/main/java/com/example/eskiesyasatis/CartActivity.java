@@ -1,5 +1,6 @@
 package com.example.eskiesyasatis;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -56,7 +57,10 @@ public class CartActivity extends AppCompatActivity {
             if (currentItems.isEmpty()) {
                 Toast.makeText(this, "Sepetiniz boş!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Siparişiniz alındı! Toplam: " + calculateTotal(currentItems) + " TL", Toast.LENGTH_LONG).show();
+                double total = calculateTotal(currentItems);
+                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                intent.putExtra("totalAmount", total);
+                startActivity(intent);
             }
         });
     }

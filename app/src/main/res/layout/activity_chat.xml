@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/backgroundColor">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <ImageView
+            android:id="@+id/btnBackChat"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:padding="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Geri"
+            app:tint="@color/textColorPrimary" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/ivChatUserPhoto"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_person"
+                app:tint="@color/textColorSecondary" />
+
+            <TextView
+                android:id="@+id/tvChatUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kullanıcı"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMarkAsSold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Satıldı"
+            android:textColor="@color/primaryColor"
+            android:textSize="12sp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/primaryColor"
+            app:backgroundTint="@color/white"
+            android:visibility="gone"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="8dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+    <HorizontalScrollView
+        android:id="@+id/scrollQuickReplies"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:background="@color/backgroundColor"
+        android:paddingVertical="8dp"
+        android:visibility="gone">
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipReply1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hâlâ satılık mı?"
+                android:textColor="@color/textColorPrimary"
+                app:chipBackgroundColor="@color/white"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Chip.Action" />
+            
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipReply2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Son fiyat nedir?"
+                android:textColor="@color/textColorPrimary"
+                app:chipBackgroundColor="@color/white"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Chip.Action" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipReply3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Takas düşünür müsünüz?"
+                android:textColor="@color/textColorPrimary"
+                app:chipBackgroundColor="@color/white"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Chip.Action" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipReply4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nereden teslim alabilirim?"
+                android:textColor="@color/textColorPrimary"
+                app:chipBackgroundColor="@color/white"
+                style="@style/Widget.MaterialComponents.Chip.Action" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:hint="Mesaj yazın..."
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:background="@drawable/bg_bottom_sheet"
+            android:backgroundTint="#E5F5F2"
+            android:textColor="@color/textColorPrimary"
+            android:textColorHint="@color/textColorSecondary"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <ImageButton
+            android:id="@+id/btnSend"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_send"
+            android:background="@drawable/bg_favorite_circle"
+            android:backgroundTint="@color/primaryColor"
+            app:tint="@color/white" />
+    </LinearLayout>
+</LinearLayout>
